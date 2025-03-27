@@ -1,32 +1,31 @@
-import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import serviceAccount from './climbing-competition-de5af-firebase-adminsdk-fbsvc-2a1fea6080.json';
+import { initializeApp, applicationDefault, cert } from "firebase-admin/app";
+import { getFirestore, Timestamp, FieldValue, Filter } from "firebase-admin/firestore";
+
+import { readJson } from "./utils/readfile";
+
+const firebaseConfiguration = readJson("./serviceAccountKey.json");
 
 initializeApp({
-  credential: cert(serviceAccount),
+  credential: cert(firebaseConfiguration)
 });
 
 const db = getFirestore();
 
 
+
 const getDocument = async () => {
-  try {
-    // Fetch documents from 'users' collection
-    const snapshot = await db.collection('users').get();
-    console.log('QuerySnapshot:', snapshot); // Log the entire snapshot
-    console.log('')
+  const docRef = db.collection('categories').doc('alovelace');
 
-    if (snapshot.empty) {
-      console.log('No documents found in the "users" collection');
-      return;
-    }
+await docRef.set({
+  first: 'Ada',
+  last: 'Lovelace',
+  born: 1815
+});
 
-    snapshot.forEach((doc) => {
-      console.log(`${doc.id} =>`, doc.data());
-    });
-  } catch (error) {
-    console.error('Error getting documents:', error);
-  }
+const snapshot = await db.collection('categories').get();
+snapshot.forEach((doc) => {
+  console.log(doc.id, '=>', doc.data());
+});
 };
 
 getDocument();
