@@ -26,4 +26,4 @@ yarn.lock
 dist/
 build/
 
-serviceAccountKey.json
+climbingService.json
